@@ -35,7 +35,9 @@ To estimate the national infection and disease burden of SARS-CoV-2 in South Afr
 2. South African Medical Research Council (SAMRC) estimates of excess deaths by sex and 5-year age bands   
 3. Healthcare utilisation surveys (HUS) conducted in three communities in three provinces  
 4. Age-stratified infection attack rates by SARS-CoV-2 wave obtained from the Prospective Household study of SARS-CoV-2, Influenza and Respiratory Syncytial virus community burden, Transmission dynamics and viral interaction in South Africa – Coronavirus disease 2019 (PHIRST-C) cohort  
-5. Mid-year population estimates
+5. Mid-year population estimates. Publically available at https://www.statssa.gov.za/ (Updated sheet used within analysis uploaded)
+### Data sharing  
+Requests for the underlying data should be made from the custodians of the data.  Aggregated DATCOV data are available on request to the South African National Institute of Communicable Diseases (NICD).  The data dictionary is available on request to the data custodian, Dr Waasila Jassat (waasilaj@genesis-analytics.com).
   
 ## Software  
 * RStudio 2023.06.0+421 for Windows  
