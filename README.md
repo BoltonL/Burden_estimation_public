@@ -62,3 +62,5 @@ To estimate the national infection and disease burden of SARS-CoV-2 in South Afr
 - BurdenCI.R: Generate bootstrapped estimates for medically and non-medically attended burden estimates.  Included are the scripts for: MedAttendBurdenCItotal.R, MedAttendBurdenCI.R, NonMedBurdenCI.R, NonMedBurdenCIstrat.R
 - BurdenPlotsUpd.R: Generates figures for medically and non-medically attended severe and fatal illness
 
+  **For any technical queries regarding the analysis code or for comments and suggestions, please contact Larisse Bolton at lbolton@sun.ac.za**
+
