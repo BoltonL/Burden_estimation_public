@@ -1,3 +1,19 @@
+# Copyright (c) 2024 Larisse Bolton
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 library(tidyverse)
 library(lubridate)
 library(openxlsx)
@@ -239,9 +255,11 @@ non_med_attended_burden_country_table_age_out$total_severe <- non_med_attended_b
 non_med_attended_burden_country_table_age_out$total_fatal <- non_med_attended_burden_country_table_age_out$incidence_fatal_age +
   non_med_attended_burden_country_table_age_out$incidence_non_fatal
 
+#--------------------------------------------------------------------------------------------------------------------------------------------------
+#7. GET INFECTION RELATED ESTIMATES 
 
 data_dir_ci <- './Output/CI'
-data_dir_ci_2 <- 'G:/results'
+data_dir_ci_2 <- 'G:/results' #saved bootstrapped data
 
 #Calculate the infection rates
 source('./Code/InfectionRates.R')
@@ -265,6 +283,8 @@ infection_rates_age_ci <- phirst %>%
 infections_rates_age_table$wave.nr <- factor(infections_rates_age_table$wave.nr,
                                                                 labels = c("1","2","3","4","5"))
 
+#-------------------------------------------------------------------------------------------------------------------------------------------------------
+#8. CALCULATE BOOTSTRAP CONFIDENCE INTERVALS
 
 source('./Code/confidence_intervals_strat.R')
 confidence_intervals_out <- conf_int_strat(directory = data_dir_ci, directory_upd = data_dir_ci_2, attack = infections_rates_attack)
@@ -349,47 +369,47 @@ plot(figure.ifr)
 
 #------------------------------------------------------------------------------------------------------------
 
-#7. CONFIDENCE INTERVALS
+#BOOTSTRAPPING - ONLY RUN WHEN NEEDING TO GENERATE BOOTSTRAPPED DATA
 
 ##Update wave_data
-wave_datcov_data_admit <- wave_data_admit[[1]] # wave data for admissions
-wave_datcov_data_admit <- lapply(wave_datcov_data_admit, function(y){
-  y %>% 
-    rename(Sex = BirthSex) %>%
-    mutate(Sex = fct_explicit_na(Sex, na_level = NA_character_)) %>%
-    filter(Sex== "Male" | Sex == "Female") %>%
-    mutate(Sex = factor(Sex, levels = c("Female","Male"))) 
-})
-wave_pop_peaks_admit_age <- lapply(wave_in_admit[[2]], function(a1){ #population estimate at peaks stratified by age only
-  
-  a1 %>% 
-    group_by(age.group) %>%
-    summarise(age_pop_estimate_at_peak = sum(age_pop_estimate_at_peak))
-})
-
-wave_datcov_data_death <- wave_data_death[[1]] # wave data for deaths
-wave_datcov_data_death <- lapply(wave_datcov_data_death, function(y){
-  y %>% 
-    rename(Sex = BirthSex) %>%
-    mutate(Sex = fct_explicit_na(Sex, na_level = NA_character_)) %>%
-    filter(Sex== "Male" | Sex == "Female") %>%
-    mutate(Sex = factor(Sex, levels = c("Female","Male"))) 
-})
-wave_pop_peaks_death_age <- lapply(wave_in_death[[2]], function(a2){ #population estimate at peaks stratified by age only
-  
-  a2 %>% 
-    group_by(age.group) %>%
-    summarise(age_pop_estimate_at_peak = sum(age_pop_estimate_at_peak))
-})
+# wave_datcov_data_admit <- wave_data_admit[[1]] # wave data for admissions
+# wave_datcov_data_admit <- lapply(wave_datcov_data_admit, function(y){
+#   y %>% 
+#     rename(Sex = BirthSex) %>%
+#     mutate(Sex = fct_explicit_na(Sex, na_level = NA_character_)) %>%
+#     filter(Sex== "Male" | Sex == "Female") %>%
+#     mutate(Sex = factor(Sex, levels = c("Female","Male"))) 
+# })
+# wave_pop_peaks_admit_age <- lapply(wave_in_admit[[2]], function(a1){ #population estimate at peaks stratified by age only
+#   
+#   a1 %>% 
+#     group_by(age.group) %>%
+#     summarise(age_pop_estimate_at_peak = sum(age_pop_estimate_at_peak))
+# })
+# 
+# wave_datcov_data_death <- wave_data_death[[1]] # wave data for deaths
+# wave_datcov_data_death <- lapply(wave_datcov_data_death, function(y){
+#   y %>% 
+#     rename(Sex = BirthSex) %>%
+#     mutate(Sex = fct_explicit_na(Sex, na_level = NA_character_)) %>%
+#     filter(Sex== "Male" | Sex == "Female") %>%
+#     mutate(Sex = factor(Sex, levels = c("Female","Male"))) 
+# })
+# wave_pop_peaks_death_age <- lapply(wave_in_death[[2]], function(a2){ #population estimate at peaks stratified by age only
+#   
+#   a2 %>% 
+#     group_by(age.group) %>%
+#     summarise(age_pop_estimate_at_peak = sum(age_pop_estimate_at_peak))
+# })
 
 #a. generate bootstrap samples of wave_data (DATCOV data)
 # source('./Code/BurdenBoot.R')
 #input = wave data for admissions refactored and wave data for deaths refactored
-bootstrap_samples <- burden_bootstrap_data(data_admit_in = wave_datcov_data_admit,data_death_in = wave_datcov_data_death)
+# bootstrap_samples <- burden_bootstrap_data(data_admit_in = wave_datcov_data_admit,data_death_in = wave_datcov_data_death)
 
 #output:
-bootstrap_samples_admit <- readRDS(file.path('./Data/wave_bootstrap_data_admit.RDS')) #bootstrapped wave data for admissions
-bootstrap_samples_death <- readRDS(file.path('./Data/wave_bootstrap_data_death.RDS')) #bootstrapped wave data for deaths
+# bootstrap_samples_admit <- readRDS(file.path('./Data/wave_bootstrap_data_admit.RDS')) #bootstrapped wave data for admissions
+# bootstrap_samples_death <- readRDS(file.path('./Data/wave_bootstrap_data_death.RDS')) #bootstrapped wave data for deaths
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
